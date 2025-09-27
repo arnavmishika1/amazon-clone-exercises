@@ -41,7 +41,7 @@ products.forEach((product) => {
 
       <div class="product-spacer"></div>
 
-      <div class="added-to-cart">
+      <div class="added-to-cart js-added-to-cart-${product.id}">
         <img src="images/icons/checkmark.png">
         Added
       </div>
@@ -58,7 +58,10 @@ document.querySelector('.js-products-grid').innerHTML = productHtml;
 document.querySelectorAll('.js-add-to-cart-button')
   .forEach((button) => {
     button.addEventListener('click', () => {
-      const productId = button.dataset.productId;
+      // const productId = button.dataset.productId;
+      // use destructuring
+      const {productId} = button.dataset;
+
       // matching item
       let matchingItem;
       cart.forEach((item) => {
@@ -77,8 +80,10 @@ document.querySelectorAll('.js-add-to-cart-button')
         matchingItem.quantity += quantity;
       } else {
         cart.push({
-          productId: productId,
-          quantity: quantity
+          // productId: productId,
+          // quantity: quantity
+          productId,
+          quantity
         });
       }
 
@@ -94,6 +99,14 @@ document.querySelectorAll('.js-add-to-cart-button')
       document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
 
       console.log(cart);
+
+      // added message
+      const addedElement = document.querySelector(`.js-added-to-cart-${productId}`);
+      addedElement.classList.add('added-to-cart-display');
+      // disappear message after 2 seconds
+      setTimeout(() => {
+        addedElement.classList.remove('added-to-cart-display');
+      }, 2000);
     });
   });
 

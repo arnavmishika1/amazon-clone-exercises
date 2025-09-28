@@ -57,6 +57,9 @@ document.querySelector('.js-products-grid').innerHTML = productHtml;
 
 document.querySelectorAll('.js-add-to-cart-button')
   .forEach((button) => {
+
+    let addedMessageTimeoutId;
+
     button.addEventListener('click', () => {
       // const productId = button.dataset.productId;
       // use destructuring
@@ -105,8 +108,19 @@ document.querySelectorAll('.js-add-to-cart-button')
       addedElement.classList.add('added-to-cart-display');
       // disappear message after 2 seconds
       setTimeout(() => {
-        addedElement.classList.remove('added-to-cart-display');
-      }, 2000);
+        // Check if a previous timeoutId exists. If it does,
+        // we will stop it.
+        if(addedMessageTimeoutId) {
+          clearTimeout(addedMessageTimeoutId)
+        }
+
+        const timeoutId = setTimeout(() => {
+          addedElement.classList.remove('added-to-cart-display');
+        }, 2000);
+        
+        // Save the timeoutId so we can stop it later.
+        addedMessageTimeoutId = timeoutId;
+      });
     });
   });
 

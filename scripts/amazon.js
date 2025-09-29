@@ -1,3 +1,6 @@
+import { cart, addToCart, displayCartMessage } from '../data/cart.js';
+import { products} from '../data/products.js';
+
 let productHtml = '';
 
 products.forEach((product) => {
@@ -55,6 +58,18 @@ products.forEach((product) => {
 
 document.querySelector('.js-products-grid').innerHTML = productHtml;
 
+
+function updateCartQuantity(quantity) {
+  // update quantity in cart
+  let totalQuantity = 0;
+  cart.forEach((cartItem) => {
+    totalQuantity += cartItem.quantity;
+  });
+
+  // update cart quantity html
+  document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
+}
+
 document.querySelectorAll('.js-add-to-cart-button')
   .forEach((button) => {
 
@@ -65,62 +80,21 @@ document.querySelectorAll('.js-add-to-cart-button')
       // use destructuring
       const {productId} = button.dataset;
 
-      // matching item
-      let matchingItem;
-      cart.forEach((item) => {
-        if(productId === item.productId){
-          matchingItem = item;
-        }
-      });
-
       // add quantity selector feature:
       const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
       const quantity = Number(quantitySelector.value);
 
+      addToCart(productId, quantity);
 
-      // add to cart
-      if(matchingItem) {
-        matchingItem.quantity += quantity;
-      } else {
-        cart.push({
-          // productId: productId,
-          // quantity: quantity
-          productId,
-          quantity
-        });
-      }
+      updateCartQuantity(quantity);
 
       // reset the Quantity selector:
       quantitySelector.value = 1;
 
-      // update quantity in cart
-      let totalQuantity = 0;
-      cart.forEach((item) => {
-        totalQuantity += item.quantity;
-      });
-
-      document.querySelector('.js-cart-quantity').innerHTML = totalQuantity;
-
       console.log(cart);
 
-      // added message
-      const addedElement = document.querySelector(`.js-added-to-cart-${productId}`);
-      addedElement.classList.add('added-to-cart-display');
-      // disappear message after 2 seconds
-      setTimeout(() => {
-        // Check if a previous timeoutId exists. If it does,
-        // we will stop it.
-        if(addedMessageTimeoutId) {
-          clearTimeout(addedMessageTimeoutId)
-        }
-
-        const timeoutId = setTimeout(() => {
-          addedElement.classList.remove('added-to-cart-display');
-        }, 2000);
-        
-        // Save the timeoutId so we can stop it later.
-        addedMessageTimeoutId = timeoutId;
-      });
+      displayCartMessage(addedMessageTimeoutId, productId);
+      
     });
   });
 

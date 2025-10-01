@@ -33,7 +33,7 @@ cart.forEach((cartItem) => {
           </div>
           <div class="product-quantity">
             <span>
-              Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+              Quantity: <span class="quantity-label js-quantity-label-${matchingProduct.id}">${cartItem.quantity}</span>
             </span>
             <span class="update-quantity-link link-primary js-update-quantity-link"
               data-product-id="${cartItem.productId}">
@@ -136,18 +136,37 @@ document.querySelectorAll('.js-update-quantity-link')
     });
   });
 
-document.querySelector('.js-save-quantity-link')
+document.querySelectorAll('.js-save-quantity-link')
   .forEach((link) => {
+    const productId = link.dataset.productId;
+    const quantityInput = document.querySelector(`.js-quantity-input-${productId}`);
+
     link.addEventListener('click', () => {
-      const productId = link.dataset.productId;
+      handleSaveQuantity(productId, quantityInput);
+    });
 
-      const container = document.querySelector(`.js-cart-item-container-${productId}`);
-
-      container.classList.remove('is-editing-quantity');
-
-      const quantityInput = document.querySelector(`.js-quantity-input-${productId}`);
-      const newQuantity = Number(quantityInput.value);
-
-      updateQuantity(productId, newQuantity);
+    quantityInput.addEventListener('keydown', (event) => {
+      if(event.key === 'Enter') {
+        handleSaveQuantity(productId, quantityInput);
+      }
     });
   });
+
+function handleSaveQuantity(productId, quantityInput) {
+  const newQuantity = Number(quantityInput.value);
+
+  if(newQuantity < 0 || newQuantity >= 1000) {
+    alert('Quantity must be at least 0 and less than 1000');
+    return;
+  }
+  updateQuantity(productId, newQuantity);
+
+  const container = document.querySelector(`.js-cart-item-container-${productId}`);
+  container.classList.remove('is-editing-quantity');
+
+  const quantityLabel = document.querySelector(`.js-quantity-label-${productId}`);
+
+  quantityLabel.innerHTML = newQuantity;
+
+  updateCartQuantity();
+}

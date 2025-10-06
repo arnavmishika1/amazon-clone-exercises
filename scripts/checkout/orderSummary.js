@@ -1,30 +1,19 @@
 import { calculateCartQuantity, cart, removeFromCart, updateQuantity, updateDeliveryOption } from '../../data/cart.js';
-import { products } from '../../data/products.js';
+import { getProduct, products } from '../../data/products.js';
 import { currencyFormat } from '../utility/money.js';
-import { deliveryOptions } from '../../data/deliveryOption.js';
+import { deliveryOptions, getDeliveryOption } from '../../data/deliveryOption.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
+import { renderPaymentSummary } from './paymentSummary.js';
 
 export function renderOrderSummary() {
   let cartSummaryHTML = ''
 
   cart.forEach((cartItem) => {
-    let matchingProduct;
     const productId = cartItem.productId;
-
-    products.forEach((product) => {
-      if(product.id === productId) {
-        matchingProduct = product;
-      }
-    });
+    const matchingProduct = getProduct(productId);
 
     const deliveryOptionId = cartItem.deliveryOptionId;
-    let deliveryOption;
-
-    deliveryOptions.forEach((option) => {
-      if(option.id === deliveryOptionId) {
-        deliveryOption = option;
-      }
-    });
+    const deliveryOption = getDeliveryOption(deliveryOptionId);
 
     const today = dayjs();
     const deliveryDate = today.add(
@@ -137,6 +126,9 @@ export function renderOrderSummary() {
         container.remove();
 
         updateCartQuantity();
+
+        // update payment summary
+        renderPaymentSummary();
       });
     });
 
@@ -153,7 +145,6 @@ export function renderOrderSummary() {
     .forEach((link) => {
       link.addEventListener('click', () => {
         const productId = link.dataset.productId;
-        console.log(productId);
 
         const container = document.querySelector(`.js-cart-item-container-${productId}`);
 
@@ -168,11 +159,17 @@ export function renderOrderSummary() {
 
       link.addEventListener('click', () => {
         handleSaveQuantity(productId, quantityInput);
+
+        // update payment summary
+        renderPaymentSummary();
       });
 
       quantityInput.addEventListener('keydown', (event) => {
         if(event.key === 'Enter') {
           handleSaveQuantity(productId, quantityInput);
+
+        // update payment summary
+        renderPaymentSummary();
         }
       });
     });
@@ -202,6 +199,9 @@ export function renderOrderSummary() {
         const {productId, deliveryOptionId} = element.dataset;
         updateDeliveryOption(productId, deliveryOptionId);
         renderOrderSummary();
+
+        // update payment summary
+        renderPaymentSummary();
       });
     });
 }

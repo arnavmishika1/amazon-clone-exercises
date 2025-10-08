@@ -55,7 +55,8 @@ export function renderOrderSummary() {
                 data-product-id="${cartItem.productId}">
                 Save
               </span>
-              <span class="delete-quantity-link link-primary js-delete-quantity-link"
+              <span class="delete-quantity-link link-primary js-delete-quantity-link
+                js-delete-link-${matchingProduct.id}"
                 data-product-id="${cartItem.productId}">
                 Delete
               </span>

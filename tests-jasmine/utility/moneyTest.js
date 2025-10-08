@@ -19,4 +19,8 @@ describe('test suite: currencyFormat', () => {
     });
   });
 
+  it('negative number works', () => {
+    expect(currencyFormat(-500)).toEqual('-5.00');
+  });
+
 });

@@ -1,4 +1,4 @@
-import { cart, addToCart, displayCartMessage, calculateCartQuantity } from '../data/cart.js';
+import { cart } from '../data/cart-class.js';
 import { products} from '../data/products.js';
 import { currencyFormat } from './utility/money.js';
 
@@ -63,7 +63,7 @@ document.querySelector('.js-products-grid').innerHTML = productHtml;
 
 
 function updateCartQuantity() {
-  const cartQuantity = calculateCartQuantity();
+  const cartQuantity = cart.calculateCartQuantity();
   // update cart quantity html
   document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
 }
@@ -82,16 +82,14 @@ document.querySelectorAll('.js-add-to-cart-button')
       const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
       const quantity = Number(quantitySelector.value);
 
-      addToCart(productId, quantity);
+      cart.addToCart(productId, quantity);
 
       updateCartQuantity();
 
       // reset the Quantity selector:
       quantitySelector.value = 1;
 
-      console.log(cart);
-
-      displayCartMessage(addedMessageTimeoutId, productId);
+      cart.displayCartMessage(addedMessageTimeoutId, productId);
       
     });
   });

@@ -6,9 +6,10 @@ import { loadCart } from "../data/cart.js";
 
 new Promise((resolve) => {
   loadProducts(() => {
-    resolve();
+    resolve('value 1');
   });
-}).then(() => {
+}).then((value) => {
+  console.log(value);
   return new Promise((resolve) => {
     loadCart(() => {
       resolve();

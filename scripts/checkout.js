@@ -12,6 +12,9 @@ async function loadPage() {
       resolve('value3');
     });
   });
+  
+  renderOrderSummary();
+  renderPaymentSummary();
 }
 loadPage();
 

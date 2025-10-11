@@ -7,9 +7,9 @@ import { loadCart } from "../data/cart.js";
 async function loadPage() {
   await loadProductsFetch();
 
-  await new Promise((resolve) => {
+  const value = await new Promise((resolve) => {
     loadCart(() => {
-      resolve();
+      resolve('value3');
     });
   });
 }
